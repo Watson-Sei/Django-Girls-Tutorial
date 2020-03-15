@@ -1,0 +1,12 @@
+{% extends 'application/base.html' %}
+
+{% block content %}
+<div class="detail_field">
+    <h1>{{ question.title }}</h1>
+    <p>{{ question.user }}</p>
+    <p>{{ question.created_at }}</p>
+    <div class="markdownx">
+        {{ question.get_text_markdownx | safe }}<hr/><br>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'application/base.html' %}
+
+{% block content %}
+    <div class="post">
+        {% if post.published_date %}
+            <div class="date">
+                {{ post.published_date }}
+            </div>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <a class="btn btn-default" href="{% url 'application:post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <input type="button" value="Check" onclick="like()" id="like-data"> いいね<span id="like-count">{{ post.like_num }}</span>
+            <script>
+                var likeinfo = {{ is_like }};
+                var likecount = {{ post.like_num }};
+                window.onload = function () {
+                    if (likeinfo > 0){
+                        document.getElementById("like-data").classList.add("unlike");
+                    }else{
+                        document.getElementById("like-data").classList.add("like");
+                    }
+                };
+                var like = function () {
+                    console.log('/post/<int:pk>/like/')
+                    const response = axios.get('/post/{{ post.pk }}/like/');
+                    console.log(response);
+                    console.log( document.getElementById('like-count').innerText);
+                    // document.getElementById('like-count').innerText=5;
+                    if (likeinfo > 0){
+                        likeinfo = likeinfo - 1;
+                        likecount = likecount - 1;
+                        document.getElementById('like-count').innerText=likecount;
+                    }else{
+                        likeinfo = likeinfo + 1;
+                        likecount = likecount + 1;
+                        document.getElementById('like-count').innerText=likecount;
+                    }
+                        document.getElementById("like-data").classList.toggle("unlike");
+                        document.getElementById("like-data").classList.toggle("like");
+                }
+            </script>
+        {% endif %}
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.text|linebreaksbr }}</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap;">
+        <div class="col-md-8">
+          <article class="comment-area">
+            <a class="btn btn-primary my-3" href="{% url 'application:comment_form' post.pk %}">コメントを投稿する</a>
+            {% include "application/comments.html" %}
+          </article>
+        </div>
+        <div>
+        <a href="/post/{{ post.pk }}/question/edit/">質問追加</a>
+        {% for question in question %}
+            <div class="detail_filed">
+                <a href="/post/{{ post.pk }}/question/{{ question.pk }}/"><h1>{{ question.title }}</h1></a>
+                <p>{{ question.user }}</p>
+                <p>{{ question.created_at }}</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

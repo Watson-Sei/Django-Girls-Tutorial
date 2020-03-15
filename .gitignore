@@ -1,0 +1,8 @@
+*.pyc
+*~
+.idea
+.DS_Store
+./mysite/static
+./mysite/db.sqlite3
+__pycache__
+/venv

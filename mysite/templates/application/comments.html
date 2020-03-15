@@ -1,0 +1,30 @@
+{% for comment in post.comments.all %}
+{% if user.is_authenticated or comment.approved %}
+<div style="margin-left: 10px; margin-top: 30px;" class="comment">
+  <strong>{{ comment.author }}</strong>・{{ comment.timestamp }}
+  <p>{{ comment.text|linebreaksbr }}</p>
+  <p>
+    <a href="{% url 'application:reply_form' comment.pk %}">返信する</a>
+    {% if not comment.approved %}
+    ｜<a class="text-success" href="{% url 'application:comment_approve' comment.pk %}">承認</a>
+    ｜<a class="text-danger" href="{% url 'application:comment_remove' comment.pk %}">削除</a>
+    {% endif %}
+  </p>
+
+  {% for reply in comment.replies.all %}
+  {% if user.is_authenticated or reply.approved %}
+  <div style="margin-left: 35px;" class="reply ml-5">
+    <strong>{{ reply.author }}</strong>・{{ reply.timestamp }}
+    <p>{{ reply.text|linebreaksbr }}</p>
+    <p>
+      {% if not reply.approved %}
+      <a class="text-success" href="{% url 'application:reply_approve' reply.pk %}">承認</a>
+      ｜<a class="text-danger" href="{% url 'application:reply_remove' reply.pk %}">削除</a>
+      {% endif %}
+    </p>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
