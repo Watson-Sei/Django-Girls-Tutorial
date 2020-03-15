@@ -2,7 +2,7 @@
 *~
 .idea
 .DS_Store
-/static
-db.sqlite3
+/mysite/static
+/mysite/db.sqlite3
 __pycache__
 /venv
