@@ -161,15 +161,18 @@ class QuestionDetail(TemplateView):
 
 
 class QeustionEdit(View):
+
     def get(self, request, **kwargs):
-        post_id = self.kwargs['pk']
-        form = QuestionForm
-        return render(request, 'application/question_edit.html',{'form':form,'post_id':post_id})
+        self.question = self.kwargs['pk']
+        form = QuestionForm()
+        return render(request, 'application/question_edit.html',{'form':form,'post_id':self.question})
 
     def post(self, request, **kwargs):
-        post_id = self.kwargs['pk']
-        if request.method == "POST":
-            form = QuestionForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('/post/'+str(post_id)+'/')
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.user = self.request.user
+            question.post = Post.objects.get(pk=self.kwargs['pk'])
+            form.save()
+            return redirect('application:post_detail',pk=self.kwargs['pk'])
+        return render(request, 'application/question_edit.html',{'form':QuestionForm()})
