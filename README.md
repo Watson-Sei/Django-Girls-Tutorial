@@ -34,6 +34,7 @@ Github : https://github.com/neutronX/django-markdownx
 
 🗒ブログサイトなのでマークダウン方式で書けるよう実装しました
 
+🗒プレビューなどを横並びにする時にわかりやすかった記事: https://qiita.com/yu-sekita/items/d76e24d86e27c5b4396f
 
 更新♻️
 2020/3/20
