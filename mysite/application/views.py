@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http.response import JsonResponse
 from django.utils import timezone
-from .models import Post, Like, Question
+from .models import Post, Like, Question,QuestionLike
 from .forms import PostForm, QuestionForm
 from django.contrib.auth.models import User
 from django.views.generic import View, TemplateView
@@ -20,8 +20,8 @@ def post_detail(request, pk, **kwargs):
     post = get_object_or_404(Post, pk=pk)
     print(type(post))
     question = Question.objects.filter(post=post)
-    is_like = Like.objects.filter(user=request.user).filter(post=post).count()
-    return render(request, 'application/post_detail.html', {'post': post, 'is_like': is_like,'question':question})
+    question_is_like = Like.objects.filter(user=request.user).filter(post=post).count()
+    return render(request, 'application/post_detail.html', {'post': post, 'question_is_like': question_is_like,'question':question})
 
 
 def post_edit(request, pk):
@@ -52,6 +52,7 @@ def post_new(request):
         form = PostForm()
     return render(request, 'application/post_edit.html', {'form': form})
 
+# Like Function View
 
 class Like_Detail(View):
     def get(self, request, pk, *args, **kwargs):
@@ -147,6 +148,8 @@ def reply_remove(request, pk):
     reply.delete()
     return redirect('application:post_detail', pk=reply.comment.post.pk)
 
+# Question function View
+
 class QuestionDetail(TemplateView):
     template_name = 'application/question.html'
 
@@ -154,8 +157,11 @@ class QuestionDetail(TemplateView):
         question_id = self.kwargs['question_id']
         print(question_id)
         question = get_object_or_404(Question, pk=question_id)
+        question_is_like = QuestionLike.objects.filter(user=self.request.user).filter(question=question).count()
         context = {
-            'question':question
+            'question':question,
+            'question_is_like':question_is_like,
+            'post_pk':self.kwargs['pk']
         }
         return self.render_to_response(context)
 
@@ -176,3 +182,31 @@ class QeustionEdit(View):
             form.save()
             return redirect('application:post_detail',pk=self.kwargs['pk'])
         return render(request, 'application/question_edit.html',{'form':QuestionForm()})
+
+
+class QuestionLikeDetail(View):
+    def get(self, request, *args, **kwargs):
+        question = Question.objects.get(id=self.kwargs['question_id'])
+        question_is_like = QuestionLike.objects.filter(user=self.request.user).filter(question=question).count()
+        # unlike
+        if question_is_like > 0:
+            liking = QuestionLike.objects.get(question__id=self.kwargs['question_id'], user=self.request.user)
+            liking.delete()
+            question.like_num -= 1
+            question.save()
+            question = get_object_or_404(Question, pk=self.kwargs['question_id'])
+            json ={'question_value':question.like_num}
+            return JsonResponse(json)
+
+        # like
+        question.like_num += 1
+        question.save()
+        like = QuestionLike()
+        like.user = self.request.user
+        like.question = question
+        like.save()
+        question = get_object_or_404(Question, pk=self.kwargs['question_id'])
+        json = {'question_value':question.like_num}
+        return JsonResponse(json)
+
+

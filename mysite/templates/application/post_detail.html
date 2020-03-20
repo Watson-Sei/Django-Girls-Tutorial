@@ -54,11 +54,18 @@
         <div>
         <a href="/post/{{ post.pk }}/question/edit/">質問追加</a>
         {% for question in question %}
-            <div class="detail_filed">
-                <a href="/post/{{ post.pk }}/question/{{ question.pk }}/"><h1>{{ question.title }}</h1></a>
-                <p>{{ question.user }}</p>
-                <p>{{ question.created_at }}</p>
+        <table border="1">
+            <div class="detail_field">
+                <tr>
+                    <td rowspan="3"><p>{{ question.like_num }}</p></td>
+                    <td><a href="/post/{{ post.pk }}/question/{{ question.pk }}/"><h1>{{ question.title }}</h1></a></td>
+                </tr>
+                <tr>
+                    <td rowspan="1" colspan="1">{{ question.user }}</td>
+                    <td rowspan="1" colspan="1">{{ question.created_at }}</td>
+                </tr>
             </div>
+        </table>
         {% endfor %}
         </div>
     </div>

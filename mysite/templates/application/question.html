@@ -5,6 +5,39 @@
     <h1>{{ question.title }}</h1>
     <p>{{ question.user }}</p>
     <p>{{ question.created_at }}</p>
+    {% if user.is_authenticated %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <input type="button" value="Check" onclick="like()" id="like-data"> いいね<span id="like-count">{{ question.like_num }}</span>
+    <script>
+        var likeinfo = {{ question_is_like }};
+        var likecount = {{ question.like_num }};
+        window.onload = function () {
+            if (likeinfo > 0){
+                document.getElementById("like-data").classList.add("unlike");
+            }else{
+                document.getElementById("like-data").classList.add("like");
+            }
+        };
+        var like = function () {
+            console.log('/post/{{ post_pk }}/question/{{ question.pk }}/like');
+            const response = axios.get('/post/{{ post_pk }}/question/{{ question.pk }}/like');
+            console.log(response);
+            console.log( document.getElementById('like-count').innerText);
+            // document.getElementById('like-count').innerText=5;
+            if (likeinfo > 0){
+                likeinfo = likeinfo - 1;
+                likecount = likecount - 1;
+                document.getElementById('like-count').innerText=likecount;
+            }else{
+                likeinfo = likeinfo + 1;
+                likecount = likecount + 1;
+                document.getElementById('like-count').innerText=likecount;
+            }
+                document.getElementById("like-data").classList.toggle("unlike");
+                document.getElementById("like-data").classList.toggle("like");
+            }
+        </script>
+    {% endif %}
     <div class="markdownx">
         {{ question.get_text_markdownx | safe }}<hr/><br>
     </div>

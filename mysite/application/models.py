@@ -72,6 +72,7 @@ class Question(models.Model):
     title = models.CharField(verbose_name='title', max_length=200)
     text = MarkdownxField(verbose_name='text')
     created_at = models.DateTimeField(default=timezone.now)
+    like_num = models.IntegerField(default=0)
     """ カスタムメソッド """
     def get_text_markdownx(self):
         return mark_safe(markdownify(self.text))
@@ -82,3 +83,7 @@ class Question(models.Model):
     class Meta:
         verbose_name = 'Question'
         verbose_name_plural = 'Question'
+
+class QuestionLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='question_like_user')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)

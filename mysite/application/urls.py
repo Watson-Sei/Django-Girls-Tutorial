@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .views import Like_Detail
-from .views import (CommentFormView,comment_approve,comment_remove,ReplyFormView,reply_approve,reply_remove,QuestionDetail,QeustionEdit)
+from .views import (CommentFormView,comment_approve,comment_remove,ReplyFormView,reply_approve,reply_remove,QuestionDetail,QeustionEdit,QuestionLikeDetail)
 
 app_name = 'application'
 urlpatterns = [
@@ -19,4 +19,5 @@ urlpatterns = [
     path('post/<int:pk>/question/<int:question_id>/',QuestionDetail.as_view(),name='get'),
     path('post/<int:pk>/question/edit/',QeustionEdit.as_view(),name='get'),
     path('post/<int:pk>/question/edit/',QeustionEdit.as_view(),name='post'),
+    path('post/<int:pk>/question/<int:question_id>/like/',QuestionLikeDetail.as_view(),name='get'),
 ]
