@@ -1,5 +1,23 @@
 {% extends 'application/base.html' %}
 
+{% block head %}
+<style>
+/* テーブル*/
+.markdownx table {
+    border-collapse: collapse;
+}
+/* テーブル*/
+.markdownx th,td {
+    border: solid 2px;
+}
+/* このブロックの枠を制限*/
+.detail_field {
+    margin-right: 70%;
+}
+</style>
+<link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/styles/default.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="detail_field">
     <h1>{{ question.title }}</h1>
@@ -42,4 +60,8 @@
         {{ question.get_text_markdownx | safe }}<hr/><br>
     </div>
 </div>
+<!-- highlight.js-->
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.16.2/build/highlight.min.js"></script>
+<!-- highlight.js-->
+<script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}

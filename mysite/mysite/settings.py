@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'markdownx',
+    'django.forms',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +64,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'templates', 'allauth'),
+            os.path.join(BASE_DIR, 'templates', 'markdownx'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -150,3 +152,11 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 
 
+
+""" 画像サイズ """
+MARKDOWNX_IMAGE_MAX_SIZE = {
+    'size': (500, 500), 'quality':90
+}
+
+# ウィジェットテンプレートを上書きするための設定
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
