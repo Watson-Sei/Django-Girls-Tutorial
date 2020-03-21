@@ -36,6 +36,14 @@ Github : https://github.com/neutronX/django-markdownx
 
 🗒プレビューなどを横並びにする時にわかりやすかった記事: https://qiita.com/yu-sekita/items/d76e24d86e27c5b4396f
 
+✅django-mdeditor
+
+Github : https://github.com/pylixm/django-mdeditor
+
+🗒```pip install django-mdeditor``
+
+🗒Markdownの入力速度を加速させることに成功しました。
+
 更新♻️
 2020/3/20
 
@@ -43,3 +51,8 @@ Github : https://github.com/neutronX/django-markdownx
 
 実装したが無駄だったので、質問に対していいねは記事を書いた時と変わらなかった
 質問に対して、回答したコメントが解決内容であればいいねできるようにする機能と解決したときの解決タグを作る。
+
+2020/3/22
+
+markdownxをmdeditorにアップグレードしました。
+さらなる記事の再生能力をアップしました。
