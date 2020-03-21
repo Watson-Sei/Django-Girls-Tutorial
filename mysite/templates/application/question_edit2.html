@@ -1,0 +1,9 @@
+{% extends "application/base.html" %}
+
+{% block content %}
+<form action="/post/{{ post_id }}/question/edit2/" method="POST">
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
+</form>
+{% endblock %}

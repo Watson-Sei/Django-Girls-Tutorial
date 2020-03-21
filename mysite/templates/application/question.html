@@ -1,5 +1,7 @@
 {% extends 'application/base.html' %}
 
+{% load markdown_extras %}
+
 {% block head %}
 <style>
 /* テーブル*/
@@ -58,6 +60,9 @@
     {% endif %}
     <div class="markdownx">
         {{ question.get_text_markdownx | safe }}<hr/><br>
+    </div>
+    <div class="markdown">
+        {{ question.content|markdown|safe }}
     </div>
 </div>
 <!-- highlight.js-->

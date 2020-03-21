@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http.response import JsonResponse
 from django.utils import timezone
-from .models import Post, Like, Question,QuestionLike
+from .models import Post, Like, Question, QuestionLike, Question2
 from .forms import PostForm, QuestionForm
 from django.contrib.auth.models import User
 from django.views.generic import View, TemplateView
@@ -21,7 +21,9 @@ def post_detail(request, pk, **kwargs):
     print(type(post))
     question = Question.objects.filter(post=post)
     question_is_like = Like.objects.filter(user=request.user).filter(post=post).count()
-    return render(request, 'application/post_detail.html', {'post': post, 'question_is_like': question_is_like,'question':question})
+    question2 = Question2.objects.filter(post=post)
+    return render(request, 'application/post_detail.html',
+                  {'post': post, 'question_is_like': question_is_like, 'question': question, 'question2': question2})
 
 
 def post_edit(request, pk):
@@ -51,6 +53,7 @@ def post_new(request):
     else:
         form = PostForm()
     return render(request, 'application/post_edit.html', {'form': form})
+
 
 # Like Function View
 
@@ -82,8 +85,9 @@ class Like_Detail(View):
 """ コメントView """
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
-from .models import Comment,Reply
-from .forms import CommentForm,ReplyForm
+from .models import Comment, Reply
+from .forms import CommentForm, ReplyForm
+
 
 class CommentFormView(CreateView):
     model = Comment
@@ -148,22 +152,36 @@ def reply_remove(request, pk):
     reply.delete()
     return redirect('application:post_detail', pk=reply.comment.post.pk)
 
+
 # Question function View
 
 class QuestionDetail(TemplateView):
     template_name = 'application/question.html'
 
     def get(self, request, **kwargs):
-        question_id = self.kwargs['question_id']
-        print(question_id)
-        question = get_object_or_404(Question, pk=question_id)
-        question_is_like = QuestionLike.objects.filter(user=self.request.user).filter(question=question).count()
-        context = {
-            'question':question,
-            'question_is_like':question_is_like,
-            'post_pk':self.kwargs['pk']
-        }
-        return self.render_to_response(context)
+        url_path = request.get_full_path()
+        if '/question/' in url_path:
+            question_id = self.kwargs['question_id']
+            print(question_id)
+            question = get_object_or_404(Question, pk=question_id)
+            question_is_like = QuestionLike.objects.filter(user=self.request.user).filter(question=question)
+            context = {
+                'question': question,
+                'question_is_like': question_is_like,
+                'post_pk': self.kwargs['pk']
+            }
+            return self.render_to_response(context)
+
+        elif '/question2/' in url_path:
+            question_id = self.kwargs['question_id']
+            print(question_id)
+            question2 = get_object_or_404(Question2, pk=question_id)
+            context = {
+                'question':question2,
+                'question_is_like':0,
+                'post_pk': self.kwargs['pk']
+            }
+            return self.render_to_response(context)
 
 
 class QeustionEdit(View):
@@ -171,7 +189,7 @@ class QeustionEdit(View):
     def get(self, request, **kwargs):
         self.question = self.kwargs['pk']
         form = QuestionForm()
-        return render(request, 'application/question_edit.html',{'form':form,'post_id':self.question})
+        return render(request, 'application/question_edit.html', {'form': form, 'post_id': self.question})
 
     def post(self, request, **kwargs):
         form = QuestionForm(request.POST)
@@ -180,8 +198,26 @@ class QeustionEdit(View):
             question.user = self.request.user
             question.post = Post.objects.get(pk=self.kwargs['pk'])
             form.save()
-            return redirect('application:post_detail',pk=self.kwargs['pk'])
-        return render(request, 'application/question_edit.html',{'form':QuestionForm()})
+            return redirect('application:post_detail', pk=self.kwargs['pk'])
+        return render(request, 'application/question_edit.html', {'form': QuestionForm()})
+
+
+class QeustionEdit2(View):
+
+    def get(self, request, **kwargs):
+        self.question = self.kwargs['pk']
+        form = QuestionForm()
+        return render(request, 'application/question_edit2.html', {'form': form, 'post_id': self.question})
+
+    def post(self, request, **kwargs):
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.user = self.request.user
+            question.post = Post.objects.get(pk=self.kwargs['pk'])
+            form.save()
+            return redirect('application:post_detail', pk=self.kwargs['pk'])
+        return render(request, 'application/question_edit2.html', {'form': QuestionForm()})
 
 
 class QuestionLikeDetail(View):
@@ -195,7 +231,7 @@ class QuestionLikeDetail(View):
             question.like_num -= 1
             question.save()
             question = get_object_or_404(Question, pk=self.kwargs['question_id'])
-            json ={'question_value':question.like_num}
+            json = {'question_value': question.like_num}
             return JsonResponse(json)
 
         # like
@@ -206,7 +242,5 @@ class QuestionLikeDetail(View):
         like.question = question
         like.save()
         question = get_object_or_404(Question, pk=self.kwargs['question_id'])
-        json = {'question_value':question.like_num}
+        json = {'question_value': question.like_num}
         return JsonResponse(json)
-
-

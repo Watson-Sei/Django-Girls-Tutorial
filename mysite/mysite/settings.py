@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     'markdownx',
     'django.forms',
+
+    'mdeditor',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +76,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'markdown_extras': 'application.templatetags.markdown_extras'
+            }
         },
     },
 ]
@@ -130,6 +135,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # django-allauthで利用するdjango.contrib.sitesを使うためにサイト識別用IDを設定
 SITE_ID = 1
@@ -160,3 +166,10 @@ MARKDOWNX_IMAGE_MAX_SIZE = {
 
 # ウィジェットテンプレートを上書きするための設定
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+
+
+MDEDITOR_CONFIGS = {
+    'default': {
+        'language':'en',
+    }
+}
