@@ -44,6 +44,8 @@ Github : https://github.com/pylixm/django-mdeditor
 
 🗒Markdownの入力速度を加速させることに成功しました。
 
+🗒参考サイト: https://yuki.world/django-markdown-implement/
+
 更新♻️
 2020/3/20
 
